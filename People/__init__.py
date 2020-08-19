@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import logging
-import pymongo as mongo
 import json
+import pymongo as mongo
 import os
 import azure.functions as func
 
@@ -20,11 +20,9 @@ def get_person_collection(client: mongo.MongoClient) -> mongo.collection:
     db = client.m121
     return db['people']
 
-def parse_mongodb_results(people: mongo.cursor):
-    result = []
-    for doc in people:
-        result.append(doc)
-    return result
+def parse_mongodb_results(people: mongo.CursorType):
+    result = tuple(people)
+    return json.dumps(result)
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
@@ -32,4 +30,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     connection_string = f"mongodb+srv://{os.environ['user']}:{os.environ['passwd']}@{os.environ['uri']}"
     people = get_people_from_mongo_by_age(connection_string, 20)
     result = parse_mongodb_results(people)
-    return func.HttpResponse(json.dumps(result), mimetype='application/json')
+    return func.HttpResponse(result, mimetype='application/json')
