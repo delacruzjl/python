@@ -128,3 +128,10 @@ obj
 appsettings.json
 local.settings.json
 .python_packages
+
+# vscode
+.vscode/
+
+# terraform
+terraform/.terraform/
+terraform/*.backup
